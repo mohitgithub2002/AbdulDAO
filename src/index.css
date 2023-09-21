@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.colors {
+  background-color: rgb(33, 32, 32);
+}
+.textColor {
+  color: 3c3742;
+}
+/* body {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("./images/bg.png");
+  background: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+} */
+
+.backgrouds {
+  background: linear-gradient(65deg, #5d9fff 0%, #b8dcff 48%, #6bbbff 100%);
+}
+
+body {
+  background: linear-gradient(65deg, #5d9fff 0%, #b8dcff 48%, #6bbbff 100%);
+
+  /* background: linear-gradient(
+    181.2deg,
+    rgb(181, 239, 249) 10.5%,
+    rgb(254, 254, 254) 86.8%
+  ); */
+}
+.radius {
+  border-radius: 5% 5% 0px 0px;
+}
+
+.text-blue-sky {
+  color: rgb(0, 140, 255);
+}
+
+.active {
+  color: rgb(0, 140, 255);
+  font-size: x-large;
+}
+
+td,
+tr,
+th {
+  padding: 20px 55px;
+}
