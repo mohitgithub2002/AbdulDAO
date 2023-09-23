@@ -16,6 +16,8 @@ const Hero = () => {
                 console.log(response.data.total_investment)
                 Cookies.set('user', JSON.stringify({user_id : email, total_investment : response.data.total_investment}))
                 window.location.href= "/"
+            }else{
+                setError(response.data.error)
             }
         }).catch(error=>{
             console.log(error);
@@ -62,6 +64,8 @@ const Hero = () => {
                             <button class="middle none font-sans font-bold center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xl py-3 px-6 rounded-lg bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] block w-full" type="button"
                                 onClick = {handleSubmit}
                             >Sign In</button>
+                            {/* error */}
+                            {error && <p class="text-red-500 text-xs italic">{error}</p>}
                             <p class="antialiased font-sans text-xl font-light leading-normal text-inherit mt-6 flex justify-center">Don't have an account?
                                 <span class="block antialiased font-sans text-xl leading-normal text-blue-500 ml-1 font-bold">Signup</span>
 
