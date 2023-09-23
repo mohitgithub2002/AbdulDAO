@@ -9,11 +9,15 @@ const Header = () => {
   //connect to metamask
   const { ethereum } = window;
   const connectMetamask = async () => {
-    if(window.ethereum !== undefined){
+    try{
+      if(window.ethereum !== undefined){
       const accounts = await ethereum.request({method: 'eth_requestAccounts'});
       setAccount(accounts[0]);
+      }
+    }catch(error){
+      console.log(error)
+      alert(error)
     }
-    
   }
   const [user,setUser]= useState();
   useEffect(() => {
@@ -58,6 +62,7 @@ const Header = () => {
                   <div>
                     <NavLink to="/add-proposal"> Add Proposal</NavLink>{" "}
                   </div>
+                  
                   {user ? (
                     <button onClick={handleLogout}>
                       Logout ({user})

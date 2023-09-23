@@ -6,6 +6,7 @@ import Dashboard from "./component/Dashboard";
 import Card from "./component/Card";
 import { Details } from "./component/Details";
 import AddProposal from "./component/AddProposal";
+import EditProposal from "./component/EditProposal";
 import Cookies from "js-cookie";
 import connectContract from './connectContract'
 const App = () => {
@@ -24,12 +25,13 @@ const App = () => {
     <>
       <Header />
       <Routes>
-          <Route path="/" element = {!isAuth?<Navigate to ="/login"/>:<Card/>} />
+          <Route path="/login" element = {!isAuth?<Login/>:<Navigate to="/"/>} />
           <Route path="/card" element = {!isAuth?<Navigate to ="/login"/>:<Dashboard/>} />
           {/* <Route path="/dashbord" Component={Dashboard} /> */}
-          <Route path="/details" element = {!isAuth?<Navigate to ="/login"/>:<Details/>} />
+          <Route path="/details/:id" element = {!isAuth?<Navigate to ="/login"/>:<Details/>} />
           <Route path="/add-proposal" element = {!isAuth?<Navigate to ="/login"/>:<AddProposal/>} />
-          <Route path="/login" element = {!isAuth?<Login/>:<Navigate to="/"/>} />
+          <Route path="/editproposal/:id" element = {!isAuth?<Navigate to ="/login"/>:<EditProposal/>} />
+          <Route path="/" element = {!isAuth?<Navigate to ="/login"/>:<Card/>} />
       </Routes>
       {/* <Hero /> */}
       {/* <Dashboard /> */}
