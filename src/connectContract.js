@@ -451,7 +451,8 @@ const connectContract = async () => {
             }
         ]
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        signer = provider.getSigner();
+        signer = await provider.getSigner();
+        console.log("signer at contract: ", signer )
         contract = new ethers.Contract(Address, Abi, signer);
     }catch(error){
         console.log(error)

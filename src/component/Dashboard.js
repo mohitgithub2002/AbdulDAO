@@ -1,28 +1,63 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
-
+import Signature from "../Signature";
 import { contract } from "../connectContract";
+import axios from "axios";
 const Dashboard = () => {
+    const {signCreate} = Signature();
+    const [account, setAccount] = useState("");
+    const[amount,setAmount] = useState();
+    const [totalInvestment, setTotalInvestment] = useState(0);
+    const [claimAmount, setClaimAmount] = useState(0);
+    const [restAmount, setRestAmount] = useState(0);
+    const[time,setTime] = useState();
+    useEffect(() => {
+        if(window.ethereum){
+            window.ethereum.request({ method: 'eth_requestAccounts' }).then((res)=>{
+                setAccount(res[0]);
+            })
+        }
+    }, [amount]);
+
+    useEffect(() => {
+        const user = Cookies.get("user");
+        setTotalInvestment(JSON.parse(user).total_investment);
+        const apiURL = "http://localhost:5000/getAmount/"+JSON.parse(user).user_id;
+        axios.get(apiURL).then((res)=>{
+            console.log(res.data.amount);
+            setClaimAmount(res.data.amount);
+            setRestAmount(totalInvestment-res.data.amount)
+        })
+
+    }, [account]);
     
-    // console.log(
-    //     "rahul : ",
-    //     signCreate().then(async (res) => {
-    //       console.log("res : ", await res);
-    //     })
-    // )
+    
+
 
     const handelSubmit = async ()=>{
-        
+       try{ 
+        if(amount>restAmount){alert("You can't claim more than your investment");return}
+        const user = Cookies.get("user");
+        const username = JSON.parse(user).user_id;
+        const date = new Date();
+        const timestamp = date.getTime();
+        const signature = await signCreate(account,amount,timestamp);
+        // const voucher = [account,amount,timestamp.toString(),signature.signature]
+        // const res = await contract.redeem(voucher);
+
+        const update = axios.post("http://localhost:5000/update",{
+            user:username,
+            amount:amount
+        })
+        console.log(update);
+        alert("Transaction Successfull")
+        window.location.href = "/"
+        }catch(error){
+            console.log(error);
+        }
     }
     
-    const [totalInvestment, setTotalInvestment] = useState(0);
-    useEffect(() => {
-        // Check if the user is authenticated
-        const userData = Cookies.get("user");
-        if(userData){
-            setTotalInvestment(JSON.parse(userData).total_investment);
-        }
-    }, []);
+    
     return (
         <>
             <div class="relative min-h-screen w-full  z-0">
@@ -41,9 +76,9 @@ const Dashboard = () => {
                                     Total Investment : {totalInvestment} USD
                                 </h1>
                                 <h1 className="font-bold text-sky-600 text-md sm:text-lg md:text-xl my-2 ">
-                                    Claimed Investment : 200 USD                            </h1>
+                                    Claimed Investment : {claimAmount} USD                            </h1>
                                 <h1 className="font-bold text-sky-600 text-md sm:text-lg md:text-xl my-2 ">
-                                    Remaining Investment : 300 USD
+                                    Remaining Investment : {restAmount} USD
                                 </h1>
                             </div>
 
@@ -59,10 +94,10 @@ const Dashboard = () => {
                                         type="text"
                                         name="token"
                                         id="token"
-                                        readonly=""
+                                        
                                         placeholder=""
                                         className="block w-full rounded-md  py-2.5 sm:py-1.5 pl-4 pr-10     shadow-sm  border-solid border-2 border-blue-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-400 sm:text-base font-medium sm:leading-10 outline-none "
-                                        value="300 USD"
+                                        onChange={(e) => {setAmount(e.target.value)}}
                                     />
                                 </div>
                             </div>
