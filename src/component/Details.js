@@ -28,8 +28,8 @@ export const Details = () => {
       let status = false;
       if(now>=(Number(data[1])*1000)&&now<=(Number(data[2])*1000)){
         setIsActive(true);
-        status=true
       }
+      if(now<=(Number(data[2])*1000)) status = true;
       
       
       //dates
@@ -53,7 +53,7 @@ export const Details = () => {
         const element = data[5][i];
         votes.push(Number(element));
         total += Number(element);
-        if(Number(element)>maxvalue) max =i; maxvalue=Number(element);
+        if(Number(element)>maxvalue) if(maxvalue===0){max =i;} maxvalue=Number(element);
       }
       
       setTotalVotes(total);
@@ -72,6 +72,7 @@ export const Details = () => {
   
   const vote = async(index)=>{
     try{
+      if(voteValue==="") alert("please enter value");
       const res =  await contract.userVoteByProposalId(id,index,voteValue);
       await res.wait();
       alert("voted successfully")
@@ -156,11 +157,11 @@ export const Details = () => {
                     <div class="bg-transparent relative rounded-[2rem] mt-0 py-4 mb-2 flex justify-between items-center">
                       <div class="bg-zinc-100 h-[20px] w-full absolute bottom-0 left-0 rounded-[2rem]">
                         <span class="text-xs text-center absolute left-[40%] md:left-[45%] py-0.5 font-semibold z-20 text-black/50">
-                          {((votes[index]/totalVotes)*100).toFixed(2)}% Sold
+                          {(votes[index])?(Number((votes[index]/totalVotes)*100)).toFixed(2):"0"}% Sold
                         </span>
                         <div
                           class="py-1 w-full h-full  bg-gradient-to-tr from-blue-600 to-blue-400 relative rounded-[2rem] "
-                          style={{ width: `${(votes[index]/totalVotes)*100}%` }}
+                          style={{ width: `${(votes[index])?(votes[index]/totalVotes)*100:"0"}%` }}
                         ></div>
                       </div>
                     </div>
