@@ -1,9 +1,9 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
-import Signature from "../Signature";
+
 import { contract } from "../connectContract";
 const Dashboard = () => {
-    const { signCreate } = Signature();
+    
     // console.log(
     //     "rahul : ",
     //     signCreate().then(async (res) => {
@@ -12,18 +12,7 @@ const Dashboard = () => {
     // )
 
     const handelSubmit = async ()=>{
-        signCreate().then(async(res) =>{
-            try{
-                const redeem = await contract.redeem(res)
-                await redeem.wait(); 
-                console.log(redeem)
-            }catch(err){
-                console.log(err)
-                alert(err.reason)
-            }
-                
-                
-        })
+        
     }
     
     const [totalInvestment, setTotalInvestment] = useState(0);
