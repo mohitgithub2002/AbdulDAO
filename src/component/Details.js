@@ -72,7 +72,7 @@ export const Details = () => {
   
   const vote = async(index)=>{
     try{
-      if(!voteValue) alert("please enter value"); return;
+      if(!voteValue) {alert("please enter value"); return;}
       const res =  await contract.userVoteByProposalId(id,index,voteValue);
       await res.wait();
       alert("voted successfully")
