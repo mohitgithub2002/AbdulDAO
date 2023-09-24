@@ -8,7 +8,7 @@ function Signature() {
         name: "Abdul-DAO-8955",
         version: "675",
         chainId: 80001,
-        verifyingContract: "0x24b85c4cef128b4769a08497775f50831c704ad2",
+        verifyingContract: "0x9C820370857E403aD50a687c6FDbAC4e2a763C97",
       };
 
       const value = {

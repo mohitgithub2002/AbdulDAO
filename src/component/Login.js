@@ -1,15 +1,20 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import axios from "axios";
 import Cookies from 'js-cookie';
 
-const Hero = () => {
+const Hero = ({userAddress}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState();
+    
     const apiUrl = 'https://dapps.12foxs.com/investement_api';
     const urlWithParams = `${apiUrl}?user_id=${email}&password=${password}`;
-    const handleSubmit = async (e) => {
+    
         
+    
+    const handleSubmit = async (e) => {
+        console.log(userAddress)
+        if(!userAddress){alert("please connect wallet"); return;}
         axios.get(urlWithParams).then(response =>{
             console.log(response.data)
             if(response.data.total_investment){

@@ -3,22 +3,9 @@ import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import connectContract from "../connectContract";
 import Cookies from "js-cookie";
-const Header = () => {
+const Header = ({ userAddress, onConnectWallet }) => {
   
-  const [account, setAccount] = useState('');
-  //connect to metamask
-  const { ethereum } = window;
-  const connectMetamask = async () => {
-    try{
-      if(window.ethereum !== undefined){
-      const accounts = await ethereum.request({method: 'eth_requestAccounts'});
-      setAccount(accounts[0]);
-      }
-    }catch(error){
-      console.log(error)
-      alert(error)
-    }
-  }
+  
   const [user,setUser]= useState();
   useEffect(() => {
     // Check if the user is authenticated
@@ -71,9 +58,9 @@ const Header = () => {
                 </div>
                 <div className="items-center justifybox height same and content size same, Its difficult to manage the ssection becuase images sizes is too much, if i set the images its look strechable -end  gap-x-4 lg:flex xl:gap-x-8">
                   <button className="rounded-md text-white bg-gradient-to-tr from-blue-600 to-blue-400 shadow-sm bg-transparent font-bold borde py-3 px-4 text-[10px] xl:py-4 xl:px-8 xl:text-sm transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
-                    onClick = {connectMetamask} 
+                    onClick = {onConnectWallet} 
                   >
-                    {account? `${account.substring(0,4)}....${account.substring(((account.length)-4),(account.length))}`:"Connect to Metamask" }
+                    {userAddress? `${userAddress.substring(0,4)}....${userAddress.substring(((userAddress.length)-4),(userAddress.length))}`:"Connect to Metamask" }
                   </button>
                 </div>
               </div>

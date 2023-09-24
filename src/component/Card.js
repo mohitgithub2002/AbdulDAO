@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {contract} from "../connectContract"
 
-const Card = () => {
+const Card = ({userAddress}) => {
   const [proposal ,setproposal] = useState([]);
-  const [account, setAccount] = useState('');
+  
   //connect to metamask
   
   const getAllProposal = async () => {
     try{
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      setAccount(accounts[0]);
+
       const proposals = [];
       const data = await contract.getAllProposals();
       console.log(data);
@@ -27,7 +26,7 @@ const Card = () => {
   useEffect(()=>{
     getAllProposal()
     
-  },[account])
+  },[userAddress])
   console.log("proposals is",proposal)
   return (
     <>

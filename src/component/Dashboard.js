@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Signature from "../Signature";
 import { contract } from "../connectContract";
 import axios from "axios";
+import { ethers } from "ethers";
 const Dashboard = () => {
     const {signCreate} = Signature();
     const [account, setAccount] = useState("");
@@ -41,10 +42,11 @@ const Dashboard = () => {
         const username = JSON.parse(user).user_id;
         const date = new Date();
         const timestamp = date.getTime();
-        const signature = await signCreate(account,amount,timestamp);
-        // const voucher = [account,amount,timestamp.toString(),signature.signature]
-        // const res = await contract.redeem(voucher);
-
+        const signature = await signCreate(account,ethers.utils.parseEther(amount),timestamp);
+        const voucher = [account,ethers.utils.parseEther(amount),timestamp.toString(),signature.signature]
+        const res = await contract.redeem(voucher);
+        const tx = await res.wait();
+        console.log(tx);
         const update = axios.post("http://localhost:5000/update",{
             user:username,
             amount:amount

@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 let contract;
 let signer;
-const connectContract = async () => {
+const connectContract =  () => {
     try{
-        const Address = "0x24b85C4CEF128b4769a08497775f50831c704AD2"
+        const Address = "0x9C820370857E403aD50a687c6FDbAC4e2a763C97"
         const Abi = [
             {
                 "inputs": [
@@ -100,49 +100,8 @@ const connectContract = async () => {
                 "type": "function"
             },
             {
-                "inputs": [
-                    {
-                        "components": [
-                            {
-                                "internalType": "address",
-                                "name": "user",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "time",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "bytes",
-                                "name": "signature",
-                                "type": "bytes"
-                            }
-                        ],
-                        "internalType": "struct DAO.LazyNFTVoucher",
-                        "name": "voucher",
-                        "type": "tuple"
-                    }
-                ],
-                "name": "redeem",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "newOwner",
-                        "type": "address"
-                    }
-                ],
-                "name": "transferOwnership",
+                "inputs": [],
+                "name": "renounceOwnership",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -178,8 +137,36 @@ const connectContract = async () => {
                 "type": "event"
             },
             {
-                "inputs": [],
-                "name": "renounceOwnership",
+                "inputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "address",
+                                "name": "user",
+                                "type": "address"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "amount",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "time",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "bytes",
+                                "name": "signature",
+                                "type": "bytes"
+                            }
+                        ],
+                        "internalType": "struct DAO.VoteVoucher",
+                        "name": "voucher",
+                        "type": "tuple"
+                    }
+                ],
+                "name": "redeem",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -188,16 +175,11 @@ const connectContract = async () => {
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "_user",
+                        "name": "newOwner",
                         "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_amount",
-                        "type": "uint256"
                     }
                 ],
-                "name": "transferTokens",
+                "name": "transferOwnership",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -345,19 +327,6 @@ const connectContract = async () => {
             },
             {
                 "inputs": [],
-                "name": "minter",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
                 "name": "owner",
                 "outputs": [
                     {
@@ -407,7 +376,7 @@ const connectContract = async () => {
                                 "type": "bytes"
                             }
                         ],
-                        "internalType": "struct DAO.LazyNFTVoucher",
+                        "internalType": "struct DAO.VoteVoucher",
                         "name": "voucher",
                         "type": "tuple"
                     }
@@ -451,7 +420,7 @@ const connectContract = async () => {
             }
         ]
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        signer = await provider.getSigner();
+        signer =  provider.getSigner();
         console.log("signer at contract: ", signer )
         contract = new ethers.Contract(Address, Abi, signer);
     }catch(error){
