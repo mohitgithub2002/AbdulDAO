@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import {contract} from "../connectContract"
+import { isAddress } from "ethers/lib/utils";
 export const Details = () => {
   const { id } = useParams();
   const[title,setTitle] = useState();
+  const [account, setAccount] = useState("");
   const [question, setQuestion] =useState();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
@@ -12,9 +14,13 @@ export const Details = () => {
   const [totalVotes, setTotalVotes] = useState();
   const [isActive, setIsActive] = useState();
   const [voteValue, setVoteValue] = useState();
+  const [owner,setOwner] = useState();
   // const [max,setMax] = useState();
   const [result,setresult] =useState();
   const getData = async ()=>{
+      const owner = await contract.owner();
+      setOwner(owner);
+      console.log("owner",owner)
       const data = await contract.getProposalById(id);
       console.log(data)
       setTitle(data[0]);
@@ -51,12 +57,15 @@ export const Details = () => {
       
       for (let i = 0; i < data[5].length; i++) {
         const element = data[5][i];
-        votes.push(Number(element));
-        total += Number(element);
+        const adminelement = data[6][i];
+        votes.push(Number(element)+Number(adminelement));
+        total = total + Number(element) + Number(adminelement);
         if(Number(element)>maxvalue) if(maxvalue===0){max =i;} maxvalue=Number(element);
       }
       
       setTotalVotes(total);
+
+      
       setVotes(votes);
       //result
       (!status)?setresult(data[4][max]):setresult("Not declared Yet");
@@ -64,19 +73,35 @@ export const Details = () => {
   }
   useEffect(() => {
       getData();
-  }, [isActive]);
+  }, [isActive,voteValue]);
   console.log("options",options)
   console.log("votes",votes)
   console.log(totalVotes);
-
+  useEffect(() => {
+    if(window.ethereum){
+        window.ethereum.request({ method: 'eth_requestAccounts' }).then((res)=>{
+            setAccount(res[0]);
+        })
+    }
+  }, [voteValue]);
   
   const vote = async(index)=>{
     try{
       if(!voteValue) {alert("please enter value"); return;}
-      const res =  await contract.userVoteByProposalId(id,index,voteValue);
+      if(account===owner.toLowerCase()){
+        
+        console.log("admin")
+      const res =  await contract.adminVoteByProposalId(id,index,voteValue);
       await res.wait();
       alert("voted successfully")
       setVoteValue("");
+      }else{
+        console.log("user",account,owner)
+        const res =  await contract.userVoteByProposalId(id,index,voteValue);
+        await res.wait();
+        alert("voted successfully")
+        setVoteValue("");
+      }
     }catch(error){
       console.log(error)
       alert(error.reason)
