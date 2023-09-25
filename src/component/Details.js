@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
-import {contract} from "../connectContract"
-import { isAddress } from "ethers/lib/utils";
-export const Details = () => {
+import {contract,tokenContract} from "../connectContract"
+import { ethers } from "ethers";
+export const Details = ({userAddress}) => {
   const { id } = useParams();
   const[title,setTitle] = useState();
   const [account, setAccount] = useState("");
@@ -15,9 +15,12 @@ export const Details = () => {
   const [isActive, setIsActive] = useState();
   const [voteValue, setVoteValue] = useState();
   const [owner,setOwner] = useState();
+  const [userBalance,setUserBalance] = useState();
   // const [max,setMax] = useState();
   const [result,setresult] =useState();
   const getData = async ()=>{
+      const balance = await tokenContract.balanceOf(userAddress||account);
+      setUserBalance(Math.trunc(Number(ethers.utils.formatEther(balance))));
       const owner = await contract.owner();
       setOwner(owner);
       console.log("owner",owner)
@@ -58,8 +61,8 @@ export const Details = () => {
       for (let i = 0; i < data[5].length; i++) {
         const element = data[5][i];
         const adminelement = data[6][i];
-        votes.push(Number(element)+Number(adminelement));
-        total = total + Number(element) + Number(adminelement);
+        votes.push((Number(element)+Number(adminelement))/10**18);
+        total = total +( Number(element) + Number(adminelement)/10**18);
         if(Number(element)>maxvalue) if(maxvalue===0){max =i;} maxvalue=Number(element);
       }
       
@@ -91,13 +94,13 @@ export const Details = () => {
       if(account===owner.toLowerCase()){
         
         console.log("admin")
-      const res =  await contract.adminVoteByProposalId(id,index,voteValue);
+      const res =  await contract.adminVoteByProposalId(id,index,ethers.utils.parseEther(voteValue));
       await res.wait();
       alert("voted successfully")
       setVoteValue("");
       }else{
         console.log("user",account,owner)
-        const res =  await contract.userVoteByProposalId(id,index,voteValue);
+        const res =  await contract.userVoteByProposalId(id,index,ethers.utils.parseEther(voteValue));
         await res.wait();
         alert("voted successfully")
         setVoteValue("");
@@ -155,7 +158,7 @@ export const Details = () => {
               <tr className="hover:bg-sky-200">
                 <td className="">Current Voting Power</td>
                 <td className="" style={{ overflowWrap: "break-word" }}>
-                  15,000
+                  {userBalance}
                 </td>
               </tr>
 
@@ -200,7 +203,7 @@ export const Details = () => {
                           type="number"
                           class="peer w-[200px]  bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent  text-sm px-3 py-3 rounded-md border-blue-gray-200 focus:border-blue-500"
                           placeholder=" "
-                          onChange={(e)=>{setVoteValue(e.target.value)}}
+                          onChange={(e)=>{setVoteValue((e.target.value))}}
                         />
                         <button
                           class="middle none font-sans font-bold center capatelize  transition-all  text-xs py-2 px-2 mx-5 rounded-lg bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] block w-[50px]"

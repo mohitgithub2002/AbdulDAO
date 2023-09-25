@@ -38,6 +38,7 @@ const App = () => {
       alert(error)
     }
   }
+  connectMetamask();
   return (
     <>
       <Header userAddress={account} onConnectWallet={connectMetamask} />
@@ -45,7 +46,7 @@ const App = () => {
           <Route path="/login" element = {!isAuth?<Login userAddress={account} />:<Navigate to="/"/>} />
           <Route path="/card" element = {!isAuth?<Navigate to ="/login"/>:<Dashboard userAddress={account}/>} />
           {/* <Route path="/dashbord" Component={Dashboard} /> */}
-          <Route path="/details/:id" element = {!isAuth?<Navigate to ="/login"/>:<Details/>} />
+          <Route path="/details/:id" element = {!isAuth?<Navigate to ="/login"/>:<Details userAddress={account} />} />
           <Route path="/add-proposal" element = {!isAuth?<Navigate to ="/login"/>:<AddProposal/>} />
           <Route path="/editproposal/:id" element = {!isAuth?<Navigate to ="/login"/>:<EditProposal/>} />
           <Route path="/" element = {!isAuth?<Navigate to ="/login"/>:<Card/>} />

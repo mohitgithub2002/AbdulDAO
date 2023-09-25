@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
-import connectContract from "../connectContract";
+import {contract} from "../connectContract";
 import Cookies from "js-cookie";
 const Header = ({ userAddress, onConnectWallet }) => {
   
-  
+  const[ isOwner,setIsOwner] = useState(false);
   const [user,setUser]= useState();
   useEffect(() => {
     // Check if the user is authenticated
@@ -16,6 +16,15 @@ const Header = ({ userAddress, onConnectWallet }) => {
     
     
   }, []);
+
+  const data =  async ()=>{
+    const user = await contract.owner();
+    if(userAddress===user.toLowerCase()){ setIsOwner(true); console.log("owner is",user)}
+    else{setIsOwner(false)}
+  }
+  useEffect(()=>{
+    data()
+  },[userAddress])
   const [toggle, setToggle] = useState(false);
   const handleLogout=()=>{
     Cookies.remove("user")
@@ -46,9 +55,12 @@ const Header = ({ userAddress, onConnectWallet }) => {
                     <NavLink to="/card"> Proposal</NavLink>{" "}
                   </div>
 
-                  <div>
-                    <NavLink to="/add-proposal"> Add Proposal</NavLink>{" "}
+                  {isOwner ? (
+                    <div>
+                    <NavLink to="/add-proposal"> Add Proposal</NavLink>
                   </div>
+                  ) : ""}
+                  
                   
                   {user ? (
                     <button onClick={handleLogout}>
@@ -146,40 +158,35 @@ const Header = ({ userAddress, onConnectWallet }) => {
                         >
                           Proposal
                         </NavLink>
+                        {isOwner ? (
+                          <div>
+                          <NavLink to="/add-proposal"
+                            className="-mx-3 active:text-white block rounded-lg px-3 py-2 text-xl font-semibold leading-7 text-blacks text-white "
+                            onClick={() => {
+                              setToggle(!toggle);
+                            }}
+                          > Add Proposal</NavLink>
+                        </div>
+                        ) : ""}
 
                         <NavLink
                           to="/login"
                           className="-mx-3 active:text-white block rounded-lg px-3 py-2 text-xl font-semibold leading-7 text-blacks text-white "
                           onClick={() => {
+                            handleLogout();
                             setToggle(!toggle);
                           }}
                         >
-                          Logout (<span>rahulcse022</span>)
+                          Logout (<span>{user}</span>)
                         </NavLink>
-                        <NavLink
-                          to="/login"
-                          className="-mx-3 active:text-white block rounded-lg px-3 py-2 text-xl font-semibold leading-7 text-blacks text-white "
-                          onClick={() => {
-                            setToggle(!toggle);
-                          }}
-                        >
-                          Login
-                        </NavLink>
+                        
                       </div>
                       <div className="flex flex-1 items-center gap-x-6 py-6">
-                        <NavLink
-                          to="/Dashboard"
-                          onClick={() => {
-                            setToggle(!toggle);
-                          }}
+                        
+                        <button className="rounded-md text-white bg-gradient-to-tr from-blue-600 to-blue-400 shadow-sm bg-transparent font-bold borde py-3 px-4 text-[10px] xl:py-4 xl:px-8 xl:text-sm transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300"
+                          onClick = {onConnectWallet} 
                         >
-                          {" "}
-                          <button className="rounded-md text-white shadow-sm bg-transparent font-bold border border-neutral-500 py-3 px-4 text-[10px] xl:py-4 xl:px-8 xl:text-sm transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300">
-                            Dashboard
-                          </button>
-                        </NavLink>
-                        <button className="rounded-md shadow-sm bg-transparent font-bold border border-white py-3 px-4 text-[10px] text-white xl:py-5 xl:px-8 xl:text-sm transition ease-in-out delay-100 hover:-translate-y-1 hover:scale-105 duration-300">
-                          Connect Wallet
+                          {userAddress? `${userAddress.substring(0,4)}....${userAddress.substring(((userAddress.length)-4),(userAddress.length))}`:"Connect to Metamask" }
                         </button>
                       </div>
                     </div>

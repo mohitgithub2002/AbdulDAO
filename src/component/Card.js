@@ -4,15 +4,27 @@ import {contract} from "../connectContract"
 
 const Card = ({userAddress}) => {
   const [proposal ,setproposal] = useState([]);
-  
+  const [isOwner,setIsOwner] = useState();
+  const [account, setAccount] = useState('');
+  const [isActive, setIsActive] = useState();
   //connect to metamask
-  
+  useEffect(() => {
+    if(window.ethereum){
+        window.ethereum.request({ method: 'eth_requestAccounts' }).then((res)=>{
+            setAccount(res[0]);
+        })
+    }
+  }, []);
   const getAllProposal = async () => {
+    console.log("user is",userAddress)
     try{
-
+      const owner = await contract.owner();
+      console.log("owner is",owner,userAddress)
+      
       const proposals = [];
       const data = await contract.getAllProposals();
       console.log(data);
+      
       data.forEach(element => {
         proposals.push(element)
       });
@@ -27,6 +39,29 @@ const Card = ({userAddress}) => {
     getAllProposal()
     
   },[userAddress])
+  const checkActive =  (start,end)=>{
+    
+      const now =  Date.now();
+
+      console.log("now is",now,Number(end)*1000)
+      if(now>=(Number(start)*1000)&&now<=(Number(end)*1000)){
+        return(true);
+      }
+      else{
+
+        return(false);
+      }
+      
+      
+  }
+  const data =  async ()=>{
+    const user = await contract.owner();
+    if(account===user.toLowerCase()){ setIsOwner(true); console.log("owner is",user)}
+    else{setIsOwner(false)}
+  }
+  useEffect(()=>{
+    data()
+  },[account])
   console.log("proposals is",proposal)
   return (
     <>
@@ -69,10 +104,17 @@ const Card = ({userAddress}) => {
                   </div> */}
                 </div>
                 <div>
-                  {/* <div className=" w-full flex justify-between items-center text-black/50 font-semibold">
-                    <div>Maximum Votes </div>
-                    <div>77.66%</div>
-                  </div> */}
+                  <div className=" w-full flex justify-between items-center text-black/50 font-semibold">
+                    {/*show active status */}
+                    
+                      <p className="font-bold text-black/50 text-l">
+                        Status:{" "}
+                      </p>
+                      <p className="font-bold text-black/50 text-l">
+                        {checkActive(item[1],item[2])?"Active":"Not Active"}
+                      </p>
+                    
+                  </div>
                 </div>
               </div>
               <div class="p-6 ">
@@ -84,6 +126,7 @@ const Card = ({userAddress}) => {
                     Details
                   </button>
                 </NavLink>
+                {isOwner?
                 <NavLink to={`/editproposal/${index}`}>
                   <button
                     class="my-2 middle none font-sans font-bold center capatelize  transition-all  text-xs py-5 px-6 rounded-lg bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] block w-full"
@@ -92,6 +135,7 @@ const Card = ({userAddress}) => {
                     Edit
                   </button>
                 </NavLink>
+                :""}
               </div>
             </div>
           </div>
