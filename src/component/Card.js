@@ -44,13 +44,19 @@ const Card = ({userAddress}) => {
       const now =  Date.now();
 
       console.log("now is",now,Number(end)*1000)
-      if(now>=(Number(start)*1000)&&now<=(Number(end)*1000)){
-        return(true);
+      if(now<(Number(start)*1000)){
+        return("Upcoming");
+      }
+      else if(now>(Number(start)*1000) && now<(Number(end)*1000)){
+        return("Active");
+      }
+      else if(now>(Number(end)*1000)){
+        return("Ended");
       }
       else{
-
-        return(false);
+        return("Not declared");
       }
+      
       
       
   }
@@ -111,7 +117,7 @@ const Card = ({userAddress}) => {
                         Status:{" "}
                       </p>
                       <p className="font-bold text-black/50 text-l">
-                        {checkActive(item[1],item[2])?"Active":"Not Active"}
+                        {checkActive(item[1],item[2])}
                       </p>
                     
                   </div>
