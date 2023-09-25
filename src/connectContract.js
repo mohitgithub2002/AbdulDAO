@@ -4,7 +4,7 @@ let signer;
 let tokenContract;
 const connectContract = () => {
   try {
-    const Address = "0x9C820370857E403aD50a687c6FDbAC4e2a763C97";
+    const Address = "0x002ee7AB64aA6009b1dE5b6B20f09f7Ab5919175";
     const Abi = [
       {
         inputs: [
