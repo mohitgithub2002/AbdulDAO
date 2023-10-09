@@ -23,7 +23,7 @@ const Dashboard = () => {
     useEffect(() => {
         const user = Cookies.get("user");
         setTotalInvestment(JSON.parse(user).total_investment);
-        const apiURL = "http://localhost:5000/getAmount/"+JSON.parse(user).user_id;
+        const apiURL = "http://93.188.163.252:5000/getAmount/"+JSON.parse(user).user_id;
         axios.get(apiURL).then((res)=>{
             console.log(res.data.amount);
             setClaimAmount(res.data.amount);
@@ -47,7 +47,7 @@ const Dashboard = () => {
         const res = await contract.redeem(voucher);
         const tx = await res.wait();
         console.log(tx);
-        const update = axios.post("http://localhost:5000/update",{
+        const update = axios.post("http://93.188.163.252:5000/update",{
             user:username,
             amount:amount
         })
