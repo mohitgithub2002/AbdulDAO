@@ -7,6 +7,7 @@ const Card = ({userAddress}) => {
   const [isOwner,setIsOwner] = useState();
   const [account, setAccount] = useState('');
   const [isActive, setIsActive] = useState();
+  const [loader, setLoader] = useState(false);
   //connect to metamask
   useEffect(() => {
     if(window.ethereum){
@@ -17,6 +18,7 @@ const Card = ({userAddress}) => {
   }, []);
   const getAllProposal = async () => {
     console.log("user is",userAddress)
+    setLoader(true);
     try{
       const owner = await contract.owner();
       console.log("owner is",owner,userAddress)
@@ -29,9 +31,11 @@ const Card = ({userAddress}) => {
         proposals.push(element)
       });
       setproposal(proposals);
+      setLoader(false);
     }catch(error){
       console.log(error)
       alert(error)
+      setLoader(false);
     } 
   }
 
@@ -72,7 +76,13 @@ const Card = ({userAddress}) => {
   return (
     <>
       <div className="mt-[-105px] mx-auto  max-w-[1400px] py-60">
-        <div className="max-w-[1400px] h-fit grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 space-x-4">
+        {
+          (loader)?<div class="w-full h-full fixed block top-0 left-0 bg-white opacity-75 z-50">
+            <span class="text-blue-500 opacity-75 top-1/2 my-0 mx-auto block relative w-0 h-0 text-3xl" style={{top: "50%"}}>
+              Loading...
+            </span>
+          </div>
+          :<div className="max-w-[1400px] h-fit grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 space-x-4">
           {proposal.map((item,index)=>(
             <div key={index}>
               <div class="  relative p-4  h-[500px]">
@@ -148,6 +158,8 @@ const Card = ({userAddress}) => {
             </div>
           ))}
         </div>
+        }
+        
       </div>
     </>
   );

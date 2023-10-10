@@ -62,7 +62,7 @@ export const Details = ({userAddress}) => {
         const element = data[5][i];
         const adminelement = data[6][i];
         votes.push((Number(element)+Number(adminelement))/10**18);
-        total = total +( Number(element) + Number(adminelement)/10**18);
+        total = total +( (Number(element) + Number(adminelement))/10**18);
         if(Number(element)>maxvalue) if(maxvalue===0){max =i;} maxvalue=Number(element);
       }
       
