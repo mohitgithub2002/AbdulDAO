@@ -3,27 +3,29 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 
 const Hero = ({userAddress}) => {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState();
-    
-    const apiUrl = 'https://dapps.12foxs.com/investement_api';
-    const urlWithParams = `${apiUrl}?user_id=${email}&password=${password}`;
+    const url = "https://propertyrobots.com/api/ReturnSelfInvestment?AmbassadorID=123771&Password=1234&APIKey=DSFKJ47FDJK4S4998KS"   
+    const apiUrl = 'https://propertyrobots.com/api/ReturnSelfInvestment';
+    const urlWithParams = `${apiUrl}?AmbassadorID=${username}&Password=${password}&APIKey=DSFKJ47FDJK4S4998KS`;
     
         
     
     const handleSubmit = async (e) => {
         console.log(userAddress)
         if(!userAddress){alert("please connect wallet"); return;}
-        axios.get(urlWithParams).then(response =>{
-            console.log(response.data)
-            if(response.data.total_investment){
-                console.log(response.data.total_investment)
-                Cookies.set('user', JSON.stringify({user_id : email, total_investment : response.data.total_investment}))
-                window.location.href= "/"
-            }else{
-                setError(response.data.error)
-            }
+        axios.get(url).then(response =>{
+            console.log(response)
+            console.log(response.AmbassadorID);
+            // if(response.data.total_investment){
+            //     // console.log(response.data.total_investment)
+            //     // Cookies.set('user', JSON.stringify({user_id : response.data.FullName, total_investment : response.data.SelfInvestment, AmbassadorID: response.data.AmbassadorID}))
+            //     // window.location.href= "/"
+            // }else{
+            //     console.log(response.error)
+            //     // setError(response.data.error)
+            // }
         }).catch(error=>{
             console.log(error);
             setError(error);
@@ -42,9 +44,9 @@ const Hero = ({userAddress}) => {
                         </div>
                         <div class="p-6 flex flex-col gap-4">
                             <div class="relative w-full min-w-[200px] h-16">
-                                <input type="email" 
-                                    onChange={(e)=>{setEmail(e.target.value)}}
-                                class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-md px-3 py-3 rounded-md border-blue-gray-200 focus:border-blue-500" placeholder=" " /><label class="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-[18px] text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[4.1] text-blue-gray-400 peer-focus:text-blue-500 before:border-blue-gray-200 peer-focus:before:border-blue-500 after:border-blue-gray-200 peer-focus:after:border-blue-500">Email</label>
+                                <input type="username" 
+                                    onChange={(e)=>{setUsername(e.target.value)}}
+                                class="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-md px-3 py-3 rounded-md border-blue-gray-200 focus:border-blue-500" placeholder=" " /><label class="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-[18px] text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[4.1] text-blue-gray-400 peer-focus:text-blue-500 before:border-blue-gray-200 peer-focus:before:border-blue-500 after:border-blue-gray-200 peer-focus:after:border-blue-500">username</label>
                             </div>
                             <div class="relative w-full min-w-[200px] h-16">
                                 <input type="password"
@@ -70,7 +72,7 @@ const Hero = ({userAddress}) => {
                                 onClick = {handleSubmit}
                             >Sign In</button>
                             {/* error */}
-                            {error && <p class="text-red-500 text-xs italic">{error}</p>}
+                            {/* {error && <p class="text-red-500 text-xs italic">{error}</p>} */}
                             <p class="antialiased font-sans text-xl font-light leading-normal text-inherit mt-6 flex justify-center">Don't have an account?
                                 <span class="block antialiased font-sans text-xl leading-normal text-blue-500 ml-1 font-bold">Signup</span>
 

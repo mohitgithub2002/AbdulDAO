@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-const dbURI = "mongodb+srv://dao:dao@cluster0.99uhnut.mongodb.net/?retryWrites=true&w=majority" ;
+const dbURI = "mongodb+srv://ravi:ravi@cluster0.2rdjws6.mongodb.net/" ;
 
 
 mongoose.connect(dbURI, {
