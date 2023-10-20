@@ -7,7 +7,7 @@ const Hero = ({userAddress}) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState();
-    const url = "https://propertyrobots.com/api/ReturnSelfInvestment?AmbassadorID=123771&Password=1234&APIKey=DSFKJ47FDJK4S4998KS"   
+       
     const apiUrl = 'https://propertyrobots.com/api/ReturnSelfInvestment';
     const urlWithParams = `${apiUrl}?AmbassadorID=${username}&Password=${password}&APIKey=DSFKJ47FDJK4S4998KS`;
     
@@ -19,19 +19,17 @@ const Hero = ({userAddress}) => {
         axios.get(urlWithParams).then(response =>{
             const jsonData = JSON.parse(response.data);    
             console.log(jsonData);
-            console.log(response)
-            
-            if(jsonData.SelfInvestment){
+            if(jsonData.StatusCode===200){
                 
                 Cookies.set('user', JSON.stringify({user_id : jsonData.FullName, total_investment : jsonData.SelfInvestment, AmbassadorID: jsonData.AmbassadorID}))
                 window.location.href= "/"
             }else{
-                console.log(response.error)
-                setError(response.data.error)
+                console.log(jsonData.StatusCode)
+                setError(jsonData.Message)
             }
         }).catch(error=>{
             console.log(error);
-            setError(error);
+            setError("Username or password is incorrect");
         })
     }
     return (
@@ -74,8 +72,8 @@ const Hero = ({userAddress}) => {
                             <button class="middle none font-sans font-bold center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xl py-3 px-6 rounded-lg bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] block w-full" type="button"
                                 onClick = {handleSubmit}
                             >Sign In</button>
-                            {/* error */}
-                            {/* {error && <p class="text-red-500 text-xs italic">{error}</p>} */}
+                            
+                            {error && <p class="text-red-500 text-s italic">{error}</p>}
                             <p class="antialiased font-sans text-xl font-light leading-normal text-inherit mt-6 flex justify-center">Don't have an account?
                                 <span class="block antialiased font-sans text-xl leading-normal text-blue-500 ml-1 font-bold">Signup</span>
 
