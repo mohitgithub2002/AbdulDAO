@@ -19,7 +19,7 @@ const Hero = ({userAddress}) => {
         axios.get(urlWithParams).then(response =>{
             const jsonData = JSON.parse(response.data);    
             console.log(jsonData);
-            if(jsonData.StatusCode===200){
+            if(jsonData.StatusCode==="200"){
                 
                 Cookies.set('user', JSON.stringify({user_id : jsonData.FullName, total_investment : jsonData.SelfInvestment, AmbassadorID: jsonData.AmbassadorID}))
                 window.location.href= "/"
