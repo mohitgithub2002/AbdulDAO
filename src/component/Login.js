@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { json } from "react-router-dom";
 
 const Hero = ({userAddress}) => {
     const [username, setUsername] = useState("");
@@ -15,17 +16,19 @@ const Hero = ({userAddress}) => {
     const handleSubmit = async (e) => {
         console.log(userAddress)
         if(!userAddress){alert("please connect wallet"); return;}
-        axios.get(url).then(response =>{
+        axios.get(urlWithParams).then(response =>{
+            const jsonData = JSON.parse(response.data);    
+            console.log(jsonData);
             console.log(response)
-            console.log(response.AmbassadorID);
-            // if(response.data.total_investment){
-            //     // console.log(response.data.total_investment)
-            //     // Cookies.set('user', JSON.stringify({user_id : response.data.FullName, total_investment : response.data.SelfInvestment, AmbassadorID: response.data.AmbassadorID}))
-            //     // window.location.href= "/"
-            // }else{
-            //     console.log(response.error)
-            //     // setError(response.data.error)
-            // }
+            
+            if(jsonData.SelfInvestment){
+                
+                Cookies.set('user', JSON.stringify({user_id : jsonData.FullName, total_investment : jsonData.SelfInvestment, AmbassadorID: jsonData.AmbassadorID}))
+                window.location.href= "/"
+            }else{
+                console.log(response.error)
+                setError(response.data.error)
+            }
         }).catch(error=>{
             console.log(error);
             setError(error);

@@ -23,11 +23,15 @@ const Dashboard = () => {
     useEffect(() => {
         const user = Cookies.get("user");
         setTotalInvestment(JSON.parse(user).total_investment);
-        const apiURL = "https://api.prpcommunity.net/getAmount/"+JSON.parse(user).user_id;
+        const apiURL = "https://api.prpcommunity.net/getAmount/"+JSON.parse(user).AmbassadorID;
         axios.get(apiURL).then((res)=>{
             console.log(res.data.amount);
             setClaimAmount(res.data.amount);
             setRestAmount(totalInvestment-res.data.amount)
+            
+        }).catch(error=>{
+            console.log(error);
+            setRestAmount(totalInvestment)
         })
 
     }, [account]);
@@ -39,7 +43,7 @@ const Dashboard = () => {
        try{ 
         if(amount>restAmount){alert("You can't claim more than your investment");return}
         const user = Cookies.get("user");
-        const username = JSON.parse(user).user_id;
+        const username = JSON.parse(user).AmbassadorID;
         const date = new Date();
         const timestamp = date.getTime();
         const signature = await signCreate(account,ethers.utils.parseEther(amount),timestamp);
