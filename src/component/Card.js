@@ -3,18 +3,21 @@ import { NavLink } from "react-router-dom";
 import {contract} from "../connectContract"
 
 const Card = ({userAddress}) => {
-  const [proposal ,setproposal] = useState([]);
+    const [proposal ,setproposal] = useState([]);
   const [isOwner,setIsOwner] = useState();
   const [account, setAccount] = useState('');
   const [isActive, setIsActive] = useState();
   const [loader, setLoader] = useState(false);
   //connect to metamask
   useEffect(() => {
-    if(window.ethereum){
-        window.ethereum.request({ method: 'eth_requestAccounts' }).then((res)=>{
-            setAccount(res[0]);
-        })
-    }
+      window.ethereum.request({ method: 'eth_requestAccounts' })
+      .then((res) => {
+        setAccount(res[0]);
+        userAddress = res[0];
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
   const getAllProposal = async () => {
     console.log("user is",userAddress)
@@ -73,7 +76,7 @@ const Card = ({userAddress}) => {
     data()
   },[account])
   console.log("proposals is",proposal)
-  return (
+      return (
     <>
       <div className="mt-[-105px] mx-auto  max-w-[1400px] py-60">
         {
@@ -98,26 +101,7 @@ const Card = ({userAddress}) => {
                   {item[3]}
                 </h1>
                 <div>
-                  {/* <p className="font-bold text-black/50 text-l">
-                    A) Yes <span>(10%)</span>
-                  </p>
-                  <h1 className="font-bold text-black/50 text-l">
-                    B) No <span>(12.34%)</span>
-                  </h1>
-                  <h1 className="font-bold text-black/50 text-l">
-                    C) None (77.66%)
-                  </h1> */}
-                  {/* <div class="bg-transparent relative rounded-[2rem] mt-0 py-4 mb-2 flex justify-between items-center">
-                    <div class="bg-zinc-100 h-[20px] w-full absolute bottom-0 left-0 rounded-[2rem]">
-                      <span class="text-xs text-center absolute left-[40%] md:left-[45%] py-0.5 font-semibold z-20 text-black/50">
-                        77.66% Sold
-                      </span>
-                      <div
-                        class="py-1 w-full h-full  bg-gradient-to-tr from-blue-600 to-blue-400 relative rounded-[2rem] w-[20%]"
-                        style={{ width: "77.66%" }}
-                      ></div>
-                    </div>
-                  </div> */}
+                 
                 </div>
                 <div>
                   <div className=" w-full flex justify-between items-center text-black/50 font-semibold">
@@ -138,10 +122,10 @@ const Card = ({userAddress}) => {
                   <button
                     class="my-2 middle none font-sans font-bold center capatelize  transition-all  text-xs py-5 px-6 rounded-lg bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] block w-full"
                     type="button"
-                  >
+                                                            >
                     Details
                   </button>
-                </NavLink>
+                  </NavLink>
                 {isOwner?
                 <NavLink to={`/editproposal/${index}`}>
                   <button

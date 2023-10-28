@@ -15,7 +15,7 @@ const Hero = ({userAddress}) => {
     
     const handleSubmit = async (e) => {
         console.log(userAddress)
-        if(!userAddress){alert("please connect wallet"); return;}
+        // if(!userAddress){alert("please connect wallet"); return;}
         axios.get(urlWithParams).then(response =>{
             const jsonData = JSON.parse(response.data);    
             console.log(jsonData);
