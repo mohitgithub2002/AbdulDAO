@@ -4,8 +4,7 @@ import { ethers } from "ethers";
         const SIGNING_DOMAIN_VERSION = "675"
         const chainId = 80001
         const contractAddress = "0xdD6B7395C557293e15d47Fb3e83bE77021BDA484" // Put the address here from remix
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
+        
         const domain = {
             name: SIGNING_DOMAIN_NAME,
             version: SIGNING_DOMAIN_VERSION,
@@ -14,8 +13,11 @@ import { ethers } from "ethers";
         }
 
         async function createVoucher(user, proposalId, option, numberOfVotes, time) {
-            const voucher = { user, proposalId, option, numberOfVotes, time }
-            const types = {
+            try{
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const voucher = { user, proposalId, option, numberOfVotes, time }
+                const types = {
                 VoteVoucher2: [
                     { name: "user", type: "address" },
                     { name: "proposalId", type: "uint256" },
@@ -30,6 +32,10 @@ import { ethers } from "ethers";
                 ...voucher,
                 signature
             }
+            }catch(error){
+                console.log(error);
+            }
+            
         }
 
         async function main(user, proposalId, option, numberOfVotes) {

@@ -35,10 +35,10 @@ const App = () => {
       console.log(account)
     }catch(error){
       console.log(error)
-      alert(error)
+      
     }
   }
-  connectMetamask();
+
   return (
     <>
       <Header userAddress={account} onConnectWallet={connectMetamask} />

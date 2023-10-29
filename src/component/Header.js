@@ -18,9 +18,14 @@ const Header = ({ userAddress, onConnectWallet }) => {
   }, []);
 
   const data =  async ()=>{
-    const user = await contract.owner();
+    try{
+      const user = await contract.owner();
     if(userAddress===user.toLowerCase()){ setIsOwner(true); console.log("owner is",user)}
     else{setIsOwner(false)}
+    }catch(error){
+      console.log(error);
+    }
+    
   }
   useEffect(()=>{
     data()
