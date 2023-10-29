@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import {contract,tokenContract} from "../connectContract"
 import { ethers } from "ethers";
+import main from "../adminSignature"
 export const Details = ({userAddress}) => {
   const { id } = useParams();
   const[title,setTitle] = useState();
@@ -76,7 +77,7 @@ export const Details = ({userAddress}) => {
   }
   useEffect(() => {
       getData();
-  }, [isActive,voteValue]);
+  }, [isActive,voteValue,userAddress]);
   console.log("options",options)
   console.log("votes",votes)
   console.log(totalVotes);
@@ -87,23 +88,30 @@ export const Details = ({userAddress}) => {
         })
     }
   }, [voteValue]);
-  
+  const maxvalue = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
   const vote = async(index)=>{
     try{
       if(!voteValue) {alert("please enter value"); return;}
-      if(account===owner.toLowerCase()){
+      if(userAddress===owner.toLowerCase()){
         
         console.log("admin")
-      const res =  await contract.adminVoteByProposalId(id,index,ethers.utils.parseEther(voteValue));
+      const adminSign = await main(userAddress,id,index,ethers.utils.parseEther(voteValue));
+      const voucher = [adminSign.user,adminSign.proposalId,adminSign.option,adminSign.numberOfVotes,adminSign.time,adminSign.signature];
+      const res =  await contract.redeem2(voucher);
       await res.wait();
       alert("voted successfully")
-      setVoteValue("");
+      
       }else{
         console.log("user",account,owner)
+        const allowance = await tokenContract.allowance(userAddress,contract.address)
+        if(Number(allowance)<ethers.utils.parseEther(voteValue)){
+          const res = await tokenContract.approve(contract.address,maxvalue);
+          await res.wait();
+        }
         const res =  await contract.userVoteByProposalId(id,index,ethers.utils.parseEther(voteValue));
         await res.wait();
         alert("voted successfully")
-        setVoteValue("");
+        
       }
     }catch(error){
       console.log(error)

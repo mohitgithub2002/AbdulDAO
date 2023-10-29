@@ -61,7 +61,7 @@ const EditProposal = () => {
         <div class="absolute inset-0 z-0 h-full w-full "></div>
         <div class="container mx-auto  ">
           <div class="flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md absolute top-2/4 left-2/4  w-full sm:max-w-[32rem] max-w-[20rem] -translate-y-2/4 -translate-x-2/4">
-            <div class="relative bg-clip-border mx-4 rounded-xl overflow-hidden bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-500/40 shadow-lg -mt-6 mb-4 grid h-28 place-items-center">
+            <div class="relative bg-clip-border mx-4 my-4 rounded-xl overflow-hidden bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-500/40 shadow-lg  mb-4 grid h-28 place-items-center">
               <h3 class="block antialiased tracking-normal font-sans text-3xl font-semibold leading-snug text-white">
                 Edit Proposal (OnlyOwner)
               </h3>
