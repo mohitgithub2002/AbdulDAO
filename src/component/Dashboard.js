@@ -22,6 +22,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const user = Cookies.get("user");
+        if(!user) {window.location.href = "/login";return}
         setTotalInvestment(JSON.parse(user).total_investment);
         const apiURL = "https://api.prpcommunity.net/getAmount/"+JSON.parse(user).AmbassadorID;
         axios.get(apiURL).then((res)=>{

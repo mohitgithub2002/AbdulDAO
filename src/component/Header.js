@@ -57,7 +57,7 @@ const Header = ({ userAddress, onConnectWallet }) => {
                     <NavLink to="/"> Home</NavLink>{" "}
                   </div>
                   <div>
-                    <NavLink to="/card"> Proposal</NavLink>{" "}
+                    <NavLink to="/card"> Claim</NavLink>{" "}
                   </div>
 
                   {isOwner ? (
