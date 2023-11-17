@@ -9,20 +9,21 @@ const Card = ({userAddress}) => {
   const [isActive, setIsActive] = useState();
   const [loader, setLoader] = useState(false);
   //connect to metamask
-  // useEffect(() => {
-  //   window.ethereum.request({ method: 'eth_requestAccounts' })
-  //   .then((res) => {
-  //     setAccount(res[0]);
-  //     userAddress = res[0];
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
-  // }, []);
+  useEffect(() => {
+    window.ethereum.request({ method: 'eth_requestAccounts' })
+    .then((res) => {
+      setAccount(res[0]);
+      userAddress = res[0];
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);
   const getAllProposal = async () => {
     console.log("user is",userAddress)
     setLoader(true);
     try{
+      
       const owner = await contract.owner();
       console.log("owner is",owner,userAddress)
       

@@ -760,7 +760,7 @@ const connectContract = () => {
       },
     ];
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    signer = provider.getSigner("0x04196CFCD937BB510CA052D87D5688B855294204");
+    signer = provider.getSigner();
     console.log("signer at contract: ", signer);
     contract = new ethers.Contract(Address, Abi, signer);
     tokenContract = new ethers.Contract(token, tokenABI, signer);

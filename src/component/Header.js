@@ -17,6 +17,21 @@ const Header = ({ userAddress, onConnectWallet }) => {
     
   }, []);
 
+  const { ethereum } = window;
+  useEffect(async()=>{
+    try{
+      if(window.ethereum !== undefined){
+      const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+      userAddress = accounts[0]
+      
+      }
+      
+    }catch(error){
+      console.log(error)
+      
+    }
+  },[])
+
   const data =  async ()=>{
     try{
       const user = await contract.owner();
