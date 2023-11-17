@@ -8,7 +8,7 @@ const Hero = ({userAddress}) => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState();
        
-    const apiUrl = 'https://propertyrobots.com/api/ReturnSelfInvestment';
+    const apiUrl = 'https://propertyrobotsplan.com/api/ReturnSelfInvestment';
     const urlWithParams = `${apiUrl}?AmbassadorID=${username}&Password=${password}&APIKey=DSFKJ47FDJK4S4998KS`;
     
         
@@ -29,7 +29,7 @@ const Hero = ({userAddress}) => {
             }
         }).catch(error=>{
             console.log(error);
-            setError("Username or password is incorrect");
+            setError("Something went wrong!");
         })
     }
     return (
