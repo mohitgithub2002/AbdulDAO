@@ -33,12 +33,16 @@ const Header = ({ userAddress, onConnectWallet }) => {
   },[])
 
   const data =  async ()=>{
-    try{
-      const user = await contract.owner();
-    if(userAddress===user.toLowerCase()){ setIsOwner(true); console.log("owner is",user)}
-    else{setIsOwner(false)}
-    }catch(error){
-      console.log(error);
+    try {
+      const user = await contract.methods.owner().call();
+      if (userAddress === user.toLowerCase()) {
+        setIsOwner(true);
+        console.log('Owner is', user);
+      } else {
+        setIsOwner(false);
+      }
+    } catch (error) {
+      console.error(error);
     }
     
   }

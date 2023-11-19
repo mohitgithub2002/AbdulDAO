@@ -4,7 +4,9 @@ import Signature from "../Signature";
 import { contract } from "../connectContract";
 import axios from "axios";
 import { ethers } from "ethers";
+import Web3 from "web3";
 const Dashboard = () => {
+    let web3 = new Web3(window.ethereum);
     const {signCreate} = Signature();
     const [account, setAccount] = useState("");
     const[amount,setAmount] = useState();
@@ -42,16 +44,27 @@ const Dashboard = () => {
 
     const handelSubmit = async ()=>{
        try{ 
+
         if(amount>restAmount){alert("You can't claim more than your investment");return}
         const user = Cookies.get("user");
         const username = JSON.parse(user).AmbassadorID;
         const date = new Date();
         const timestamp = date.getTime();
         const signature = await signCreate(account,ethers.utils.parseEther(amount),timestamp);
-        const voucher = [account,ethers.utils.parseEther(amount),timestamp.toString(),signature.signature]
-        const res = await contract.redeem(voucher);
-        const tx = await res.wait();
-        console.log(tx);
+        const voucher = [account,ethers.utils.parseEther(amount).toString(),timestamp.toString(),signature.signature]
+        // const res = await contract.redeem(voucher);  
+        //web3js
+        // const accounts = await Web3.eth.getAccounts();
+        // console.log(accounts);
+        // const res = await contract.methods.redeem(voucher).call();
+        // const tx = await res.wait();
+        // console.log(tx);
+        console.log(contract);
+        const res = await contract.methods
+        .redeem(voucher)
+        .send({ from: window.ethereum.selectedAddress });
+      
+         console.log(res); 
         const update = axios.post("https://api.prpcommunity.net/update",{
             user:username,
             amount:amount

@@ -1,34 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import {contract} from "../connectContract"
+import Web3 from "web3";
+import { Address,contractAbi } from "../connectContract";
 
 const Card = ({userAddress}) => {
+  const web3 = new Web3(window.ethereum);
   const [proposal ,setproposal] = useState([]);
   const [isOwner,setIsOwner] = useState();
   const [account, setAccount] = useState('');
   const [isActive, setIsActive] = useState();
   const [loader, setLoader] = useState(false);
   //connect to metamask
-  useEffect(() => {
-    window.ethereum.request({ method: 'eth_requestAccounts' })
-    .then((res) => {
-      setAccount(res[0]);
-      userAddress = res[0];
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }, []);
+  
   const getAllProposal = async () => {
     console.log("user is",userAddress)
     setLoader(true);
     try{
-      
-      const owner = await contract.owner();
+      const mainContract = new web3.eth.Contract(contractAbi,Address)
+      const owner = await mainContract.methods.owner().call();
       console.log("owner is",owner,userAddress)
       
       const proposals = [];
-      const data = await contract.getAllProposals();
+      const data = await mainContract.methods.getAllProposals().call();
       console.log(data);
       
       data.forEach(element => {
@@ -69,9 +63,15 @@ const Card = ({userAddress}) => {
       
   }
   const data =  async ()=>{
-    const user = await contract.owner();
-    if(account===user.toLowerCase()){ setIsOwner(true); console.log("owner is",user)}
-    else{setIsOwner(false)}
+    try{
+      const mainContract = new web3.eth.Contract(contractAbi,Address)
+      const user = await mainContract.methods.owner().call();
+      if(account===user.toLowerCase()){ setIsOwner(true); console.log("owner is",user)}
+      else{setIsOwner(false)}
+    }catch(error){
+      console.log(error)
+    }
+    
   }
   useEffect(()=>{
     data()

@@ -29,8 +29,12 @@ const AddProposal = () => {
     setEndTime(timestamp/1000)
   }
   const handelsubmit =async()=>{
-    const res = await contract.addProposal(topic,startTime,endTime,question,options);
-    await res.wait();
+    // const res = await contract.addProposal(topic,startTime,endTime,question,options);
+    // await res.wait();
+    const res = await contract.methods
+        .addProposal(topic, startTime, endTime, question, options)
+        .send({ from: window.ethereum.selectedAddress });
+      
     console.log(res);
     alert("Proposal added succesfully");
   }

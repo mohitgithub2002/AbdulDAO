@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {contract} from "../connectContract"
+import {Address, contract, contractAbi} from "../connectContract"
 import { useParams } from 'react-router-dom';
 import { BsPlusCircle } from "react-icons/bs";
+import Web3 from "web3";
 const EditProposal = () => {
     const { id } = useParams();
+    const web3 = new Web3(window.ethereum);
   const [topic,setTopic] = useState();
   const [startTime,setStartTime] = useState();
   const [endTime,setEndTime] = useState();
@@ -20,7 +22,9 @@ const EditProposal = () => {
     setOptions(newOptions);
   };
   const getData = async()=>{
-    const data = await contract.getProposalById(id)
+    try{
+    const mainContract = new web3.eth.Contract(contractAbi,Address)
+    const data = await mainContract.methods.getProposalById(id).call();
     console.log(data);
     setTopic(data[0]);
     setQuestion(data[3]);
@@ -34,6 +38,10 @@ const EditProposal = () => {
         option.push(data[4][i])
       }
     setOptions(option);
+    }catch(error){
+      console.log(error);
+    }
+
   }
   useEffect(()=>{
     getData()
@@ -49,12 +57,46 @@ const EditProposal = () => {
     const timestamp = date.getTime();
     setEndTime(timestamp/1000)
   }
-  const handelsubmit =async()=>{
-    const res = await contract.editProposalById(id,topic,startTime,endTime,question,options);
-    await res.wait();
-    console.log(res);
-    alert("Proposal edited succesfully");
-  }
+  // const handelsubmit =async()=>{
+  //   const res = await contract.methods.editProposalById(id,topic,startTime,endTime,question,options).send({from:window.ethereum.selectedAddress});
+  //   let encoded_tx = res.encodeABI();
+  //   let gasPrice = await web3.eth.getGasPrice();
+  //   let gasLimit = await web3.eth.estimateGas({
+  //     gasPrice: web3.utils.toHex(gasPrice),
+  //     to: Address,
+  //     from: window.ethereum.selectedAddress,
+  //     data: encoded_tx,
+  //     value: "0x" 
+  //   });
+  //   let trx = await web3.eth.sendTransaction({
+  //     gasPrice: web3.utils.toHex(gasPrice),
+  //     gas: web3.utils.toHex(gasLimit),
+  //     to: Address,
+  //     from: window.ethereum.selectedAddress,
+  //     data: encoded_tx,
+  //     value: "0x", //ethers.utils.parseUnits(inputAmount,18)
+  //   });
+  //   console.log(gasLimit);
+  //   console.log(res);
+  //   console.log(res);
+  //   alert("Proposal edited succesfully");
+  // }
+  const handelsubmit = async () => {
+    console.log(id,topic,startTime, endTime,question,options )
+    try {
+      const res = await contract.methods
+        .editProposalById(id, topic, startTime, endTime, question, options)
+        .send({ from: window.ethereum.selectedAddress });
+      
+      
+      console.log(res);
+      alert('Proposal edited successfully');
+    } catch (error) {
+      console.error('Error submitting proposal:', error);
+      // Handle errors as needed
+    }
+  };
+  
   return (
     <>
       <div class="relative min-h-screen  w-full ">

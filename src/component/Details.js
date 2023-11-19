@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
-import {contract,tokenContract} from "../connectContract"
+import {Address, contract,contractAbi,token,tokenABI} from "../connectContract"
 import { ethers } from "ethers";
 import main from "../adminSignature"
+import Web3 from "web3";
 export const Details = ({userAddress}) => {
   const { id } = useParams();
+  const web3 = new Web3(window.ethereum);
   const[title,setTitle] = useState();
   const [account, setAccount] = useState("");
   const [question, setQuestion] =useState();
@@ -19,13 +21,20 @@ export const Details = ({userAddress}) => {
   const [userBalance,setUserBalance] = useState();
   // const [max,setMax] = useState();
   const [result,setresult] =useState();
+ 
   const getData = async ()=>{
-      const balance = await tokenContract.balanceOf(userAddress||account);
+    try{
+      const mainContract = new web3.eth.Contract(contractAbi,Address);
+      const tokenContracats = new web3.eth.Contract(tokenABI,token);
+      // const balance = await tokenContract.balanceOf(userAddress||account);
+      const balance = await tokenContracats.methods.balanceOf(userAddress||account||window.ethereum.selectedAddress).call();
       setUserBalance(Math.trunc(Number(ethers.utils.formatEther(balance))));
-      const owner = await contract.owner();
+      // const owner = await contract.owner();
+      const owner = await mainContract.methods.owner().call();
       setOwner(owner);
       console.log("owner",owner)
-      const data = await contract.getProposalById(id);
+      // const data = await contract.getProposalById(id);
+      const data = await mainContract.methods.getProposalById(id).call();
       console.log(data)
       setTitle(data[0]);
       setQuestion(data[3]);
@@ -80,6 +89,11 @@ export const Details = ({userAddress}) => {
       //result
       (!status)?setresult(data[4][max]):setresult("Not declared Yet");
       
+    }catch(error){
+      console.log(error)
+      alert("Connect Metamask")
+    }
+      
   }
   useEffect(() => {
       getData();
@@ -97,25 +111,34 @@ export const Details = ({userAddress}) => {
   const maxvalue = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
   const vote = async(index)=>{
     try{
+      const mainContract = new web3.eth.Contract(contractAbi,Address);
+      const tokenContracats = new web3.eth.Contract(tokenABI,token);
       if(!voteValue) {alert("please enter value"); return;}
       if(userAddress===owner.toLowerCase()){
-        
         console.log("admin")
-      const adminSign = await main(userAddress,id,index,ethers.utils.parseEther(voteValue));
-      const voucher = [adminSign.user,adminSign.proposalId,adminSign.option,adminSign.numberOfVotes,adminSign.time,adminSign.signature];
-      const res =  await contract.redeem2(voucher);
-      await res.wait();
-      alert("voted successfully")
+        const adminSign = await main(userAddress,id,index,ethers.utils.parseEther(voteValue));
+        const voucher = [adminSign.user,adminSign.proposalId,adminSign.option,adminSign.numberOfVotes.toString(),adminSign.time.toString(),adminSign.signature];
+        // const res =  await contract.redeem2(voucher);
+        // await res.wait();
+        const res =  await mainContract.methods.redeem2(voucher).send({from:window.ethereum.selectedAddress });
+        console.log(res);
+        alert("voted successfully")
       
       }else{
         console.log("user",account,owner)
-        const allowance = await tokenContract.allowance(userAddress,contract.address)
+        // const allowance = await tokenContracats.allowance(userAddress,mainContract.address)
+        const allowance = await tokenContracats.methods.allowance(userAddress,Address).call();
+        console.log("allowance"+allowance);
         if(Number(allowance)<ethers.utils.parseEther(voteValue)){
-          const res = await tokenContract.approve(contract.address,maxvalue);
-          await res.wait();
+          // const res = await tokenContracats.approve(contract.address,maxvalue);
+          // await res.wait();
+          const res = await tokenContracats.methods.approve(Address,maxvalue).send({from:userAddress});
+          console.log(res);
         }
-        const res =  await contract.userVoteByProposalId(id,index,ethers.utils.parseEther(voteValue));
-        await res.wait();
+        // const res =  await contract.userVoteByProposalId(id,index,ethers.utils.parseEther(voteValue));
+        // await res.wait();
+        const res =  await mainContract.methods.userVoteByProposalId(id,index,ethers.utils.parseEther(voteValue).toString()).send({from:userAddress});
+        console.log(res);
         alert("voted successfully")
         
       }
