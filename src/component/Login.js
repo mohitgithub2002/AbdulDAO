@@ -15,7 +15,9 @@ const Hero = ({userAddress}) => {
     
     const handleSubmit = async (e) => {
         console.log(userAddress)
-        
+        const chainId = Number(await window.ethereum.request({ method: "eth_chainId" }) )
+        console.log(chainId)
+        if(chainId!==80001){alert("Please connect to mumbai testnet"); return ;}
         axios.get(urlWithParams).then(response =>{
             const jsonData = JSON.parse(response.data);    
             console.log(jsonData);

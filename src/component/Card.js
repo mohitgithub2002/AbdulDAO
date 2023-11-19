@@ -11,8 +11,26 @@ const Card = ({userAddress}) => {
   const [account, setAccount] = useState('');
   const [isActive, setIsActive] = useState();
   const [loader, setLoader] = useState(false);
+  const [chain, setChain] = useState();
   //connect to metamask
-  
+  useEffect(() => {
+    window.ethereum.request({ method: 'eth_requestAccounts' })
+    .then((res) => {
+      setAccount(res[0]);
+      userAddress = res[0];
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);
+
+  useEffect(()=>{
+    const checkChain = async() => {
+      const chainId = Number(await window.ethereum.request({ method: "eth_chainId" }) );
+      setChain(chainId);
+    }
+    checkChain();
+  },[userAddress])
   const getAllProposal = async () => {
     console.log("user is",userAddress)
     setLoader(true);
@@ -40,7 +58,7 @@ const Card = ({userAddress}) => {
   useEffect(()=>{
     getAllProposal()
     
-  },[userAddress])
+  },[userAddress,chain])
   const checkActive =  (start,end)=>{
     
       const now =  Date.now();
