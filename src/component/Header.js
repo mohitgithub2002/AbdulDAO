@@ -34,7 +34,7 @@ const Header = ({ userAddress, onConnectWallet }) => {
 
   const data =  async ()=>{
     try {
-      const user = await contract.methods.owner().call();
+      const user = await contract.methods.owner().call({ from: userAddress, gas: 5000000 });
       if (userAddress === user.toLowerCase()) {
         setIsOwner(true);
         console.log('Owner is', user);
@@ -180,7 +180,7 @@ const Header = ({ userAddress, onConnectWallet }) => {
                             setToggle(!toggle);
                           }}
                         >
-                          Proposal
+                          Claim
                         </NavLink>
                         {isOwner ? (
                           <div>

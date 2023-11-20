@@ -36,7 +36,7 @@ const Card = ({userAddress}) => {
     setLoader(true);
     try{
       const mainContract = new web3.eth.Contract(contractAbi,Address)
-      const owner = await mainContract.methods.owner().call();
+      const owner = await mainContract.methods.owner().call({ from: userAddress, gas: 5000000 });
       console.log("owner is",owner,userAddress)
       
       const proposals = [];
@@ -86,7 +86,7 @@ const Card = ({userAddress}) => {
   const data =  async ()=>{
     try{
       const mainContract = new web3.eth.Contract(contractAbi,Address)
-      const user = await mainContract.methods.owner().call();
+      const user = await mainContract.methods.owner().call({ from: userAddress, gas: 5000000 });
       if(account===user.toLowerCase()){ setIsOwner(true); console.log("owner is",user)}
       else{setIsOwner(false)}
     }catch(error){
