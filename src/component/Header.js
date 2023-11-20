@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
-import {contract} from "../connectContract";
+import {Address, contract, contractAbi} from "../connectContract";
 import Cookies from "js-cookie";
 const Header = ({ userAddress, onConnectWallet }) => {
   
@@ -34,7 +34,8 @@ const Header = ({ userAddress, onConnectWallet }) => {
 
   const data =  async ()=>{
     try {
-      const user = await contract.methods.owner().call({ from: userAddress, gas: 5000000 });
+      const mainContract = new window.ethereum.Contract(contractAbi, Address);
+      const user = await mainContract.methods.owner().call({ from: userAddress, gas: 5000000 });
       if (userAddress === user.toLowerCase()) {
         setIsOwner(true);
         console.log('Owner is', user);
