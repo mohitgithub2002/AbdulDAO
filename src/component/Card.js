@@ -40,7 +40,7 @@ const Card = ({userAddress}) => {
       console.log("owner is",owner,userAddress)
       
       const proposals = [];
-      const data = await mainContract.methods.getAllProposals().call();
+      const data = await mainContract.methods.getAllProposals().call({ from: userAddress, gas: 5000000 });
       console.log(data);
       
       data.forEach(element => {
@@ -55,10 +55,13 @@ const Card = ({userAddress}) => {
     } 
   }
 
-  useEffect(()=>{
-    getAllProposal()
-    
-  },[userAddress,chain])
+  useEffect(() => {
+    const fetchData = async () => {
+      await getAllProposal();
+    };
+  
+    fetchData();
+  }, [userAddress, chain]);
   const checkActive =  (start,end)=>{
     
       const now =  Date.now();
